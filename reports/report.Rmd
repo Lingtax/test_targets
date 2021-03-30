@@ -1,0 +1,69 @@
+---
+title: "test targets"
+author: "Mathew Ling"
+date: "30/03/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(tidytext)
+library(here)
+
+
+```
+
+```{r read-in}
+df <-  read_csv(here::here("data","reddit_vm.csv"))
+
+```
+
+## Target test
+
+This report does some basic data manipulation of some anti-vax content from reddit (acquired from [kaggle](https://www.kaggle.com/gpreda/reddit-vaccine-myths)). 
+
+The data frame contains the following variables:
+
+- title - relevant for posts
+- score - relevant for posts - based on impact, number of comments
+- id - unique id for posts/comments
+- url - relevant for posts - url of post thread
+- commns_num - relevant for post - number of comments to this post
+- created - date of creation
+- body - relevant for posts/comments - text of the post or comment
+- timestamp - timestamp
+
+Convert this into a `target` pipeline that generates this same report. 
+
+```{r cleaning}
+df_cleaned <-  df %>% drop_na(body) %>% 
+  select(id, body, score, comms_num, timestamp) %>% 
+  group_by(id) %>% 
+  unnest_tokens("words", body) %>% 
+  ungroup() %>% 
+  anti_join(stop_words, by = c("words"= "word"))
+
+```
+
+```{r frequencies}
+word_freq <- df_cleaned %>% 
+  count(words) %>% 
+  filter(n<300&n>40) %>% 
+  mutate(words = reorder(words, n))
+
+
+```
+
+
+## Plots
+
+You can also embed plots, for example:
+
+```{r plot, echo=FALSE}
+word_freq_plot <-  word_freq %>% ggplot(aes(x = words, y = n)) + geom_col() + coord_flip()
+
+word_freq_plot
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

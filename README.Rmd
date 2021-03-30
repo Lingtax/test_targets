@@ -1,0 +1,21 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# test targets
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+This repo contains a very bad tidytext analysis. It is intended as a starting point for someone learning the  [`targets`](https://books.ropensci.org/targets/walkthrough.html) workflow.
+
+The objective is to take the code in the report in `~ /analysis`, and split it into targets that produce the same report. 
